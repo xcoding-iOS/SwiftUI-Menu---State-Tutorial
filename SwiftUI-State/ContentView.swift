@@ -28,7 +28,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             HStack {
                 Text("Menu")
                     .font(.largeTitle)
@@ -39,37 +39,73 @@ struct ContentView: View {
                 Button("Resetta", action: {
                     self.pizze = 0
                     self.cokes = 0
+                    self.address = ""
+                    self.premiumDelivery = false
                 })
             }
             
             Stepper(value: $pizze, in: 0...10, label: {
-                Text("Pizza Margherita")
+                VStack(alignment: .leading) {
+                   Text("Pizza Margherita")
+                        .fontWeight(.bold)
+                    Text("\(format(x: pizzaPrice)) €")
+                        .font(.callout)
+                }
+                Spacer()
                 Text("\(pizze)")
             })
             
             Stepper(value: $cokes, in: 0...10, label: {
-                Text("Coca Cola")
+                VStack(alignment: .leading) {
+                   Text("Coca Cola")
+                        .fontWeight(.bold)
+                    Text("\(format(x: cokePrice)) €")
+                        .font(.callout)
+                }
+                Spacer()
                 Text("\(cokes)")
             })
+            .padding(.bottom, 20)
             
-            HStack {
-                Text("Prezzo finale")
+            HStack(alignment: .bottom) {
+                Text("Totale")
+                    .font(.title)
                 Spacer()
-                Text("\(format(x: finalPrice))")
+                Text("\(format(x: finalPrice)) €")
+                    .font(.title)
             }
+            .padding(.bottom, 20)
             
             if (finalPrice > 0) {
-                Text("Indirizzo di spedizione")
-                TextField("Via...", text: $address)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                VStack(alignment: .leading) {
+                    Text("Indirizzo di spedizione")
+                    TextField("Via...", text: $address)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                    
+                    Toggle(isOn: $premiumDelivery, label: {
+                        Text("Priority")
+                    })
+                }
+                .padding(.bottom, 20)
                 
-                Toggle(isOn: $premiumDelivery, label: {
-                    Text("Spedizione Prioritaria")
-                })
+                if (address.count > 10) {
+                    Text("Consegneremo a ")
+                    +
+                    Text(address)
+                        .fontWeight(.bold)
+                    +
+                    Text(" e pagherai un totale di ")
+                    +
+                    Text("\(format(x: finalPrice)) €")
+                        .fontWeight(.bold)
+                }
                 
             }
             
+            Spacer()
+            
         }
+        .padding()
     }
     
     func format(x: Double) -> String {
